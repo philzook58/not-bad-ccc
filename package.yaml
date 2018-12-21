@@ -1,0 +1,56 @@
+name:                not-bad-ccc
+version:             0.1.0.0
+github:              "githubuser/not-bad-ccc"
+license:             BSD3
+author:              "Author name here"
+maintainer:          "example@example.com"
+copyright:           "2018 Author name here"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/githubuser/not-bad-ccc#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+  ghc-options:
+  - -O
+  - -fenable-rewrite-rules
+  - -ddump-rule-rewrites
+
+
+executables:
+  not-bad-ccc-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -ddump-rule-rewrites
+    - -O
+    - -fenable-rewrite-rules
+    dependencies:
+    - not-bad-ccc
+
+tests:
+  not-bad-ccc-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - not-bad-ccc
