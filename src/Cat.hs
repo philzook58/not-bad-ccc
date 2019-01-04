@@ -36,7 +36,7 @@ data FreeCat a b where
     Apply :: FreeCat (FreeCat a b, a) b
     Curry :: FreeCat (a,b) c -> FreeCat a (FreeCat b c)
     Uncurry :: FreeCat a (FreeCat b c) -> FreeCat (a,b) c
-
+ 
 instance Closed FreeCat where
     applyC = Apply
     curryC = Curry

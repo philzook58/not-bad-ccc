@@ -1,6 +1,6 @@
 
 
-{-# LANGUAGE  AllowAmbiguousTypes,  TypeApplications, PartialTypeSignatures, NoMonomorphismRestriction,  FlexibleContexts
+{-# LANGUAGE  AllowAmbiguousTypes,  TypeApplications, PartialTypeSignatures, NoMonomorphismRestriction,  FlexibleContexts, NoImplicitPrelude
 #-}
 -- NoMonomorphismRestriction,
 module Main where
@@ -8,6 +8,9 @@ module Main where
 import Lib
 import CCC
 import Cat
+import Control.Category
+import Prelude hiding ((.), id)
+import Rewrite
 main :: IO ()
 main = someFunc
 
@@ -55,3 +58,53 @@ example1 = toCCC @FreeCat id
 example16 = toCCC @FreeCat (+)
 
 example17 = toCCC @FreeCat (*)
+-- fails. appears to be another inocherent hiccup. ($) is weird anyway
+-- example18 = toCCC @FreeCat ($)
+
+example18 = toCCC @FreeCat f  where f = \g x -> g x
+example19 = toCCC @FreeCat (\(g, x) -> g x)
+
+-- fails confusingly. This might mean something is fundmanetally wrong somehwere.
+-- example20 = toCCC @FreeCat f  where f = (\x -> (x, \y -> x))
+--helper = (\x -> (x, \y -> x))
+--example20 = toCCC @FreeCat helper
+
+-- can't tell if this one is correct. It is too big. revisit when I have optimizations
+example21 = toCCC @FreeCat f  where f = \h g x -> h g x
+
+
+-- you can throw catagorocial literals in there if you want
+example22 = toCCC @FreeCat (\x -> Id . x)
+example23 = toCCC @FreeCat (\(x,y) -> Dup . x)
+-- could define helper functions with preapplied (.). dup = (.) Dup 
+-- then (\x -> dup x) looks more nautral
+example24 = toCCC @FreeCat (\(x,y) -> dup x) where dup = (.) Dup 
+
+
+example25 = toCCC @FreeCat (\(x,y) -> (x,y))
+example26 = toCCC @FreeCat (\(x,(y,z)) -> (y,z))
+-- or perhaps  f $$ x = applyC . (fanC f x). This makes sense in that f and x are extractors.
+-- And then. 
+-- \x -> mysquare x.
+
+-- this all may be just asking to get confused.
+
+
+
+-- we could also compile FreeCat as a seperate language, then dump the output to a file and recompile with ghc. Pretty goofy workflow.
+-- we can also perhaps find a way to push to an external solver. That would be prettty cool.
+
+-- We could super optimize functions if we have a cetagory equivalence test. Just enumerate all possible functions and find the bets one that matches.
+-- Z3?
+-- There might be
+
+-- Other possible heurisitcs:
+-- Simulated Annealing Maybe.
+
+
+-- GLobal optimization:
+-- Dynamic Programming?
+-- MIP ?
+-- CSP ?
+
+
