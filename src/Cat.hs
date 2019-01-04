@@ -33,6 +33,14 @@ data FreeCat a b where
     Par :: FreeCat a b -> FreeCat c d -> FreeCat (a,c) (b,d)
     Add :: FreeCat (a,a) a
     Mul :: FreeCat (a,a) a
+    Apply :: FreeCat (FreeCat a b, a) b
+    Curry :: FreeCat (a,b) c -> FreeCat a (FreeCat b c)
+    Uncurry :: FreeCat a (FreeCat b c) -> FreeCat (a,b) c
+
+instance Closed FreeCat where
+    applyC = Apply
+    curryC = Curry
+    uncurryC = Uncurry
 
 deriving instance Show (FreeCat a b)
 
@@ -86,3 +94,13 @@ instance (NumCat k, Num a) => Num (k z a) where
     signum = error "TODO"
     fromInteger = error "TODO"
 
+
+{-
+
+class BoolLike a where
+    (&&) :: a -> a -> a
+    (||) :: a -> a -> a
+    not :: a -> a 
+    ite :: a -> b -> c -> Either b c 
+
+-}
