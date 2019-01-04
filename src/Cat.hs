@@ -14,6 +14,11 @@ class Monoidal k => Cartesian k where
     sndC :: k (a,b) b 
     dupC :: k a (a,a) 
 
+class Cartesian k => Closed k where
+    applyC :: k (k a b,a) b 
+    curryC :: k (a,b) c -> k a (k b c)
+    uncurryC :: k a (k b c) -> k (a,b) c
+
 fanC f g = (parC f g) . dupC
 
 idC :: Category k => k a a
