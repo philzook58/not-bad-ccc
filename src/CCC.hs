@@ -30,8 +30,8 @@ instance {-# INCOHERENT #-} (b ~ 'False) => IsTup a b
 -- instance {-# INCOHERENT #-} (d ~ 'True) => IsCurry (a -> (b -> c)) d
 -- instance {-# INCOHERENT #-} (b ~ 'False) => IsCurry a b
 
-
-
+-- Use the V and refresh the parametric variables. V a b = V {unV :: a} -- do I have to actually store b?
+-- 
 class CCC (flag :: Bool) input out | flag input -> out where -- 
     toCCC' :: input -> out
 

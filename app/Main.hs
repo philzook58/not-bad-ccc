@@ -65,9 +65,19 @@ example18 = toCCC @FreeCat f  where f = \g x -> g x
 example19 = toCCC @FreeCat (\(g, x) -> g x)
 
 -- fails confusingly. This might mean something is fundmanetally wrong somehwere.
+-- This may be failing because it tries to toCCC const as an itermediate step, which we've already
+-- seens is tempermental
 -- example20 = toCCC @FreeCat f  where f = (\x -> (x, \y -> x))
---helper = (\x -> (x, \y -> x))
---example20 = toCCC @FreeCat helper
+helper = (\x -> (x, snd)) -- where f = \y -> y 
+example20' = toCCC @FreeCat helper -- This one came out Comp (Par Id Id) Dup = Dup
+-- That isn't right. It should be Curry (Id) = Curry (Par Id Id)
+-- What is this? k a (a, k b b) = Id
+-- fanC Id (Curry Snd) = (Par Id (Curry Snd)) .  Dup
+
+-- This was a weird bug due to using id. Which was the catgoerical id
+-- No the problme is when I fan, I seperate the two type variables, but they are still connected
+-- And I try to unify them into different extractor morphism types.
+--- oh dear
 
 -- can't tell if this one is correct. It is too big. revisit when I have optimizations
 example21 = toCCC @FreeCat f  where f = \h g x -> h g x
