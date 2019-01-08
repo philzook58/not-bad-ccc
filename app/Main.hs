@@ -18,7 +18,7 @@ example2 = toCCC @FreeCat (\(x,y)->(y,x))
 
 -- You need to give the type sginature unfortunately. k is too ambiguous otherwise
 -- example3 :: Cartesian k => k _ _
-example3 = toCCC (\(z,y)->(z,z))
+example3 = toCCC @FreeCat (\(z,y)->(z,z))
 
 example4 = toCCC @FreeCat (\((x,y),z) -> x)
 
@@ -27,7 +27,7 @@ example5 = toCCC @FreeCat (\(x,y) -> x + y)
 example6 = toCCC @FreeCat (\(x,y) -> y + (x * y))
 
 -- example7 :: Cartesian k => k _ _
-example7 = toCCC (\(x,(y,z)) -> (x,(y,z)))
+example7 = toCCC @FreeCat (\(x,(y,z)) -> (x,(y,z)))
 
 myconst = \x -> \y -> x
 example8 = toCCC @FreeCat  myconst -- const -- (\x -> \y -> x)
@@ -48,11 +48,12 @@ example12 =  toCCC @FreeCat ((\x y -> y) :: a -> b -> b)
 
 -- Even this is fine
 -- example16 =  toCCC @FreeCat ((\x y -> y) :: _ -> _ -> _)
+exmaple12' = toCCC @FreeCat (\x -> (x,x))
 example13 = toCCC @FreeCat (\x y -> (x,y))
 example14 = toCCC @FreeCat f where f = (\x y z -> z)
 example15 = toCCC @FreeCat f where f = (\x y z -> x)
 
---example13 = toCCC (\(x,y) -> y)
+example13' = toCCC (\(x,y) -> y)
 example1 = toCCC @FreeCat id
 
 example16 = toCCC @FreeCat (+)
@@ -78,13 +79,19 @@ example20' = toCCC @FreeCat helper -- This one came out Comp (Par Id Id) Dup = D
 -- No the problme is when I fan, I seperate the two type variables, but they are still connected
 -- And I try to unify them into different extractor morphism types.
 --- oh dear
+-- Fixed with bizarre EitherTreem work around
 
 -- can't tell if this one is correct. It is too big. revisit when I have optimizations
 example21 = toCCC @FreeCat f  where f = \h g x -> h g x
 
 
 -- you can throw catagorocial literals in there if you want
+-- Edit: not anymore :( ...
+-- Wait, why is this working?
+-- And the Num stuff still works.
+-- It's because we have no fans.
 example22 = toCCC @FreeCat (\x -> Id . x)
+-- example22' = toCCC @FreeCat (\x -> (Id . x, Id . x)) -- This doesn't work
 example23 = toCCC @FreeCat (\(x,y) -> Dup . x)
 -- could define helper functions with preapplied (.). dup = (.) Dup 
 -- then (\x -> dup x) looks more nautral

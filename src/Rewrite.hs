@@ -63,7 +63,13 @@ rule_par_dup_eq (Comp (Par f f) Dup) | f == f = Dup . f
 
 
 -- build the curry rules.
+rule_curry :: FreeCat a b -> Maybe (FreeCat a b)
+rule_curry (Curry (Uncurry f)) = Just f
+rule_curry _ = Nothing
 
+rule_curry' :: FreeCat a b -> Maybe (FreeCat a b)
+rule_curry' (Uncurry (Curry f)) = Just f
+rule_curry' _ = Nothing
 
 
 rule_id_left :: FreeCat a b -> Maybe (FreeCat a b)
@@ -75,7 +81,8 @@ rule_id_right (Comp f Id) = Just f
 rule_id_right _ = Nothing
 
 allRules :: [Rule]
-allRules = [rule_fstsndpar, rule_id_right, rule_id_left, rule_fst_dup, rule_snd_dup, rule_par_dup, rule_par_dup', rule_par_dup''] -- rule-paren
+allRules = [rule_fstsndpar, rule_id_right, rule_id_left, rule_fst_dup,
+           rule_snd_dup, rule_par_dup, rule_par_dup', rule_par_dup'', rule_curry, rule_curry'] -- rule-paren
 -- turned off rule_paren because it actually hurts the ability to compress the nasty fanout behavior.
 
 -- yeah. Easily possible to get nasty infinite loops
