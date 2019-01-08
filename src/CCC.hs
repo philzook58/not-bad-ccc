@@ -10,7 +10,8 @@
     TypeApplications,
     NoImplicitPrelude,
     ScopedTypeVariables,
-    FlexibleContexts #-}
+    FlexibleContexts,
+    QuantifiedConstraints #-}
 module CCC (
      toCCC )where
 
@@ -31,7 +32,7 @@ instance {-# INCOHERENT #-} (b ~ 'False) => IsTup a b
 -- instance {-# INCOHERENT #-} (b ~ 'False) => IsCurry a b
 
 -- Use the V and refresh the parametric variables. V a b = V {unV :: a} -- do I have to actually store b?
--- 
+-- not using datakind because getting the kinds to work out was annoying
 data Left a
 data Right a
 
@@ -64,6 +65,37 @@ instance (Num b, Num a) => Num (Either a b) where
     abs f = error "todo"
     signum = error "TODO"
     fromInteger = error "TODO"
+
+{- for the injection of categorical literals, we also need to make Either tree a Category.
+-- might need a newtype wrapper to carry a and b through
+-- ah. This might fix the Num problem too.
+EitherCat is a categry
+If k is a NumCat, then EitherCat is
+-}
+
+-- maybe this needs to be a typeclass with unification?
+{-
+type family EitherCat' tag tree k a b where
+   EitherCat' (Left a) (Either l r) k a b = EitherCat' a l k a b
+   EitherCat' Right a ... = a l
+   EitherCat () x k a b   =    x ~ (k a b) 
+
+-- These compile, but they are wrong. You'll not be able to use them as expected.
+
+newtype EitherCat l r tag a b = EitherCat (Either l r)
+-- newtype EitherCat l r tag a b = EitherCat (Either l r)
+
+instance (Category k, EitherTree tag (k a b) (Either l r), -- No this will never work. l and r are different for all the terms.
+     EitherTree tag (k b c) (Either l r), -- we need a way to pass down the important a and b
+     EitherTree tag (k a c) (Either l r), 
+     EitherTree tag (k d d) (Either l r) ) => Category (EitherCat l r tag) where
+    (EitherCat f) . (EitherCat g) = EitherCat (inj @tag @(k a c) ((ext @tag @(k b c) f) . (ext @tag @(k a b) g)))
+    id =  EitherCat (inj @tag (id @k @d)) -- will this compile?
+-}
+-- instance Cartesian 
+
+
+
 
 type family Reverse a b where
     Reverse (Left a) b = Reverse a (Left b)
@@ -121,7 +153,7 @@ instance (Cartesian k,
 
 
 
--- does path actuall need to be here? Maybe it does. because we need to be able to extract from it or not
+-- does path actually need to be here? Maybe it does. because we need to be able to extract from it or not
 class BuildInput tup (flag :: Bool) fanindex path where
     buildInput :: path -> tup
     -- buildInput :: forall k. Cartesian k => k a b -> tup

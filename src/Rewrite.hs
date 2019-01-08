@@ -71,6 +71,12 @@ rule_curry' :: FreeCat a b -> Maybe (FreeCat a b)
 rule_curry' (Uncurry (Curry f)) = Just f
 rule_curry' _ = Nothing
 
+rule_curryapply :: Rule
+rule_curryapply (Curry Apply) = Just Id
+rule_curryapply _ = Nothing
+
+
+
 
 rule_id_left :: FreeCat a b -> Maybe (FreeCat a b)
 rule_id_left (Comp Id f) = Just f
@@ -82,7 +88,7 @@ rule_id_right _ = Nothing
 
 allRules :: [Rule]
 allRules = [rule_fstsndpar, rule_id_right, rule_id_left, rule_fst_dup,
-           rule_snd_dup, rule_par_dup, rule_par_dup', rule_par_dup'', rule_curry, rule_curry'] -- rule-paren
+           rule_snd_dup, rule_par_dup, rule_par_dup', rule_par_dup'', rule_curry, rule_curry', rule_curryapply, rule_paren] -- rule-paren
 -- turned off rule_paren because it actually hurts the ability to compress the nasty fanout behavior.
 
 -- yeah. Easily possible to get nasty infinite loops
@@ -103,6 +109,12 @@ goDown z (Par f g) = case (z f) of
                                	               Nothing -> Nothing -- nothing in either subtree macthed
                                	               Just x -> Just (Par f x) -- 
                                Just x -> Just (Par x g)  -- something in f matched the rule
+goDown z (Curry f) = case z f of 
+                         Nothing -> Nothing
+                         Just x -> Just (Curry x)
+goDown z (Uncurry f) =  case z f of 
+                             Nothing -> Nothing
+                             Just x -> Just (Uncurry x)
 goDown _ _ = Nothing -- can't go down
 {-
 goDown z (Par f g) = Par (z f) (z g)

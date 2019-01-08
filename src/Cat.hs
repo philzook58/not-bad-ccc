@@ -85,6 +85,16 @@ instance NumCat FreeCat where
     subC = error "TODO"
     absC = error "TODO"
 
+instance Num (FreeCat z a) where
+    f + g = Add . (fanC f g)
+    f * g = Mul . (fanC f g)
+    negate f = error "todo" -- negateC . f
+    f - g = error " todo " -- subC . (fanC f g)
+    abs f = error " todo" -- absC . f 
+    signum = error "TODO"
+    fromInteger = error "TODO"
+
+{-
 instance (NumCat k, Num a) => Num (k z a) where
     f + g = addC . (fanC f g)
     f * g = mulC . (fanC f g)
@@ -93,7 +103,7 @@ instance (NumCat k, Num a) => Num (k z a) where
     abs f = absC . f 
     signum = error "TODO"
     fromInteger = error "TODO"
-
+-}
 
 {-
 

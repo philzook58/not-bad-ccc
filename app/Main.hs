@@ -12,7 +12,36 @@ import Control.Category
 import Prelude hiding ((.), id)
 import Rewrite
 main :: IO ()
-main = someFunc
+main = do
+	print example1
+	print example2
+	print example3
+	print example4
+	print example5
+	print example6
+	print example7
+	print example8
+	print example9
+	print example10
+	print example11
+	print example12
+	print example13
+	print example14
+	print example15
+	print example16
+	print example17
+	print example18
+	print example19
+	--print example20
+	print example21
+	print example22
+	print example23
+	print example24
+	print example25
+	print example26
+
+
+	--someFunc
 
 example2 = toCCC @FreeCat (\(x,y)->(y,x))
 
@@ -100,6 +129,7 @@ example24 = toCCC @FreeCat (\(x,y) -> dup x) where dup = (.) Dup
 
 example25 = toCCC @FreeCat (\(x,y) -> (x,y))
 example26 = toCCC @FreeCat (\(x,(y,z)) -> (y,z))
+-- example27 = toCCC @FreeCat (
 -- or perhaps  f $$ x = applyC . (fanC f x). This makes sense in that f and x are extractors.
 -- And then. 
 -- \x -> mysquare x.
