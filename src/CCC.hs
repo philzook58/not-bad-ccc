@@ -54,6 +54,17 @@ instance (b ~ out) => EitherTree () b out where
    ext x = x
 
 
+instance (Num b, Num a) => Num (Either a b) where
+    (Left f) + (Left g) = Left (f + g)
+    (Right f) + (Right g) = Right (f + g)
+    (Left f) * (Left g) = Left (f * g)
+    (Right f) * (Right g) = Right (f * g)
+    negate f = error "Todo"
+    f - g = error "todo"
+    abs f = error "todo"
+    signum = error "TODO"
+    fromInteger = error "TODO"
+
 type family Reverse a b where
     Reverse (Left a) b = Reverse a (Left b)
     Reverse (Right a) b = Reverse a (Right b)

@@ -24,7 +24,7 @@ example4 = toCCC @FreeCat (\((x,y),z) -> x)
 
 example5 = toCCC @FreeCat (\(x,y) -> x + y)
 
-example6 = toCCC @FreeCat (\(x,y) -> y + (x * y))
+example6 = toCCC @FreeCat (\(x,y) -> (y + (x * y), x * y))
 
 -- example7 :: Cartesian k => k _ _
 example7 = toCCC @FreeCat (\(x,(y,z)) -> (x,(y,z)))
